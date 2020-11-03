@@ -5,7 +5,7 @@ var Twit = require('twit');
 var T = new Twit(require('./config.js'));
 
 // search for the latest tweets on 'atlanta' and 'weather' hashtag.
-var weatherSearch = {q: ('#weather atlanta'), count: 1, lang: 'en', result_type: "recent"}; 
+var weatherSearch = {q: ('#weather #atlanta'), count: 1, lang: 'en', result_type: "recent"}; 
 
 
 // This function finds the latest tweet with the 'atlanta' and 'weather' hashtag, and retweets it.
@@ -52,9 +52,22 @@ function editTweet() {
 	});
 }
 
-// Try to retweet something as soon as we run the program...
-//retweetLatest();
-//editTweet();
-// ...and then every hour after that. Time here is in milliseconds, so
-// 1000 ms = 1 second, 1 sec * 60 = 1 min, 1 min * 60 = 1 hour --> 1000 * 60 * 60
+//likes the most recent tweet from user @NWSAtlanta
+function likeTweet() {
+    T.get('users/show', {screen_name: 'NWSAtlanta'}, function (error, data) {
+        console.log(error, data);
+        if (!error) {
+            T.post('favorites/create', { id: data.status.id_str }, function(err, data, response) {
+            console.log("just liked something!");
+            });
+        }
+    });  
+}
+
+//every hour it calls the retweet latest function
 //setInterval(retweetLatest, 1000 * 60 * 60);
+//every 2 hours it calls the like tweet function
+//setInterval(likeTweet, 7200000);
+//every 3 hours it calls the edit tweet function
+//setInterval(editTweet, 10800000);
+
